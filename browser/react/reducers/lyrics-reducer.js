@@ -4,7 +4,7 @@ const initialState = {
   text: ''
 };
 
-export default function reducer(currentState = initialState, action) {
+export default function (currentState = initialState, action) {
   switch (action.type) {
   case SET_LYRICS:
     return Object.assign({}, currentState, {
