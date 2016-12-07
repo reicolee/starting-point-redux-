@@ -5,10 +5,10 @@ const Songs = (props) => {
   const songs = props.songs;
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
-  const toggle = props.toggleOne;
-  console.log('songs', songs)
-  console.log('current song', currentSong)
-  console.log('toggleone in songs', toggle)
+  const toggleOne = props.toggleOne;
+
+
+
   return (
     <table className='table'>
       <thead>
@@ -23,7 +23,7 @@ const Songs = (props) => {
         { songs && songs.map(song => (
           <tr key={ song.id }>
             <td>
-              <button className="btn btn-default btn-xs" onClick={ () => toggle(song, songs) }>
+              <button className="btn btn-default btn-xs" onClick={ () => toggleOne(song, songs) }>
                 <span className={ song.id === currentSong.id && isPlaying ? "glyphicon glyphicon-pause" : "glyphicon glyphicon-play" }></span>
               </button>
             </td>

@@ -10,25 +10,15 @@ import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
 import store from '../store'
-import { play, pause, load, startSong, toggleOne as T, toggle, next, prev } from '../action-creators/play'
+import { play as playAction, pause as pauseAction, load as loadAction, startSong as startSongAction, toggleOne as toggleOneAction, toggle as toggleAction, next as nextAction, prev as prevAction } from '../action-creators/play'
 
-const stuff = {
-  pplay: play,
-  ppause: pause,
-  lload: load,
-  sstartSong: startSong,
-  ttoggleOne: T,
-  ttoggle: toggle,
-  nnext: next,
-  pprev: prev
-}
+
 
 export default class AppContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = Object.assign({
-      currentSong: {},
+    this.state = Object.assign({}, {
       albums: [],
       artists: [],
       selectedAlbum: {},
@@ -48,8 +38,12 @@ export default class AppContainer extends Component {
 
   componentDidMount() {
     this.unsubscribe = store.subscribe(() => {
+      console.log("we are in subscribe");
       this.setState(store.getState());
     });
+
+    console.log("AppContainer mounted", this.state);
+
     Promise
       .all([
         axios.get('/api/albums/'),
@@ -76,21 +70,29 @@ export default class AppContainer extends Component {
   }
 
   play() {
-    store.dispatch(stuff.pplay())
+    store.dispatch(playAction());
   }
-  // pause() => store.dispatch(stuff.ppause())
+  pause() {
+    store.dispatch(pauseAction());
+  }
   load(song, list) {
-    store.dispatch(stuff.lload(song, list))
+    store.dispatch(loadAction(song, list));
   }
-  // startSong() => store.dispatch(stuff.sstartSong())
+  startSong(){
+  store.dispatch(startSongAction());
+  }
   toggleOne(song, list) {
-    store.dispatch(stuff.ttoggleOne(song, list))
+    store.dispatch(toggleOneAction(song, list));
   }
   toggle() {
-    store.dispatch(stuff.ttoggle())
+    store.dispatch(toggleAction());
   }
-  // next = () => store.dispatch(stuff.nnext())
-  // prev = () => store.dispatch(stuff.pprev())
+  next() {
+    store.dispatch(nextAction());
+  }
+  prev (){
+    store.dispatch(prevAction());
+  }
 
   setProgress(progress) {
     this.setState({
@@ -186,7 +188,7 @@ export default class AppContainer extends Component {
     console.log('this is toggleone in appcontainer', this.toggleOne)
     const props = Object.assign({}, this.state, {
       toggleOne: this.toggleOne,
-      toggle: toggle,
+      toggle: this.toggle,
       selectAlbum: this.selectAlbum,
       selectArtist: this.selectArtist,
       addPlaylist: this.addPlaylist,
@@ -202,8 +204,8 @@ export default class AppContainer extends Component {
                <div className="col-xs-10">
                  { this.props.children && React.cloneElement(this.props.children, props) }
                </div>
-               <Player currentSong={ this.state.currentSong } currentSongList={ this.state.currentSongList } isPlaying={ this.state.isPlaying } progress={ this.state.progress } next={ next }
-                 prev={ prev } toggle={ toggle } />
+               <Player currentSong={ this.state.player.currentSong } currentSongList={ this.state.player.currentSongList } isPlaying={ this.state.player.isPlaying } progress={ this.state.player.progress } next={ this.next }
+                 prev={ this.prev } toggle={ this.toggle } />
              </div>
       );
   }
